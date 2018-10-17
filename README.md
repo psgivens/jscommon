@@ -9,7 +9,7 @@ Run the followign command from the root of your webapp.
 
 This submodule expects domain information to be profided in a file at `src/data/CrudlDomains.ts`. Define `CrudlTablename` to represent the tables you would like to create in the database. Define `CrudlDomainValues` as the values you would like those domains to be represented throughout your code. Define `CrudlDatabaseCommand` as equivalent to `CrudlDatabaseCommandBase` and `CrudlDatabaseEvent` as equivalent to `CrudlDatabaseEventBase`. An example from the opioid project is this:
 
-
+    import { CrudlDatabaseCommandBase, CrudlDatabaseEventBase } from 'src/jscommon/data/CrudlDomainCommands'
     export type CrudlTableName = 
         "CountyHealthData" 
         | "SubstanceAbuseData" 
@@ -28,9 +28,9 @@ This submodule expects domain information to be profided in a file at `src/data/
         | "Researcher"
         | "HealthCare"
 
-    # These are not real examples. They demonstrate how to extend the message 
-    # passing to handle any type of event you can dream up. These commands 
-    # can be sent, and received, from your custom Saga.
+    // These are not real examples. They demonstrate how to extend the message 
+    // passing to handle any type of event you can dream up. These commands 
+    // can be sent, and received, from your custom Saga.
     export type CrudlDatabaseCommand = CrudlDatabaseCommandBase | {
         type: "Follow_Your_Heart"
     }        
@@ -78,14 +78,14 @@ Finally, you'll want to wire up the sagas in your project like this in index.tsx
     const store: ReduxStore<state.All> = createStore(reducers, {}, applyMiddleware(sagaMiddleware))
 
     // *********** Generic Patients Database Worker **************
-    const ioDatabaseWorker = new IoDatabaseWorker(store.dispatch)
+    const crudlDatabaseWorker = new CrudlDatabaseWorker(store.dispatch)
 
     /* ... other sagas omitted. */
 
-    const socialServicesManagementSaga = new CrudlSaga(ioDatabaseWorker, "SocialServices", "SocialServicesData")
+    const socialServicesManagementSaga = new CrudlSaga(crudlDatabaseWorker, "SocialServices", "SocialServicesData")
     sagaMiddleware.run(() => socialServicesManagementSaga.saga())
 
-    const honestBrokerSaga = new CrudlSaga(ioDatabaseWorker, "HonestBroker", "HonestBrokerData")
+    const honestBrokerSaga = new CrudlSaga(crudlDatabaseWorker, "HonestBroker", "HonestBrokerData")
     sagaMiddleware.run(() => honestBrokerSaga.saga())
 
     ReactDOM.render(
@@ -94,5 +94,29 @@ Finally, you'll want to wire up the sagas in your project like this in index.tsx
     );
     registerServiceWorker();
 
+In your react components use the CrudlContainer
+
+    import * as container from 'src/jscommon/components/CrudlContainer'
+
+    // Include your custom data type
+    import { QueryDatasourceIdb } from '../data/DataModels'
+
+    // Define the types that this component will use
+    type ThisProps = 
+        container.StateProps<QueryDatasourceIdb> 
+        & container.ConnectedDispatch<QueryDatasourceIdb> 
+        & container.AttributeProps
+
+    // Define your react-state
+    type ComponentState = {} & {
+        // .. omitted
+    }
+    
+    class DatasourceManagementComp extends React.Component<ThisProps, ComponentState> {
+        // .. omitted
+    }
+
+    // Export the react component
+    export default connectContainer("Datasources", DatasourceManagementComp, s => s.datasources)
 
 

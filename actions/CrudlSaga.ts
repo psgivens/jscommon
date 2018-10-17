@@ -1,8 +1,7 @@
 import { call, put, takeEvery } from 'redux-saga/effects'
-import { AggregationCommands } from 'src/actions/AggregationSaga'
 import { CrudlDatabaseCommand, CrudlDatabaseEvent, CrudlDomainValues, CrudlTableName } from 'src/data/CrudlDomains'
 import { CrudlEntity, DomainTypes} from '../data/CrudlDomainCommands'
-import { IoDatabaseWorker } from '../workers/CrudlDatabaseWorker'
+import { CrudlDatabaseWorker } from '../workers/CrudlDatabaseWorker'
 import { FetchExampleCommands, FetchExampleSaga } from './FetchExampleSaga'
 
 export type CrudlSagaCommand = {
@@ -53,10 +52,10 @@ export function createIoPatientManagementCommands (domain:CrudlDomainValues) {
 
 
 export class CrudlSaga {
-    private databaseWorker:IoDatabaseWorker
+    private databaseWorker:CrudlDatabaseWorker
     private tableName: CrudlTableName
     private domain: CrudlDomainValues
-    constructor (databaseWorker:IoDatabaseWorker, domain:CrudlDomainValues, tableName: CrudlTableName) {
+    constructor (databaseWorker:CrudlDatabaseWorker, domain:CrudlDomainValues, tableName: CrudlTableName) {
         this.databaseWorker = databaseWorker
         this.saga = this.saga.bind(this)
         this.addItem = this.addItem.bind(this)
@@ -117,8 +116,6 @@ export class CrudlSaga {
                     item: event.item,
                     type: "CRUDL_ITEMLOADED"
                 })
-
-                yield put(AggregationCommands.buildBroker())
             }
         }
     }
@@ -143,8 +140,6 @@ export class CrudlSaga {
                     id: event.id,
                     type: "CRUDL_ITEM_DELETED"
                 })
-
-                yield put(AggregationCommands.buildBroker())
             }
         }  
     }

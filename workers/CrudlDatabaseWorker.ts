@@ -11,7 +11,7 @@ const promiseBacks: { [index:number]: PromiseBack } = {}
 
 export type HandleDatabaseCommand = {} & {}
 
-export class IoDatabaseWorker {
+export class CrudlDatabaseWorker {
   private dispatch : Dispatch<any>
   private databaseWorker: ITypedWorker<IoDatabaseCommandEnvelope, IoDatabaseResponseEnvelope>
   constructor(dispatch: Dispatch<any>){
