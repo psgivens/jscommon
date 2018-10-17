@@ -1,13 +1,9 @@
-import { 
-    IoDatabaseCommand,
-    IoDatabaseEvent,
-    IoDataTableName 
-} from './IoDomainCommands'
+import { CrudlDatabaseCommand, CrudlDatabaseEvent, CrudlTableName } from 'src/data/CrudlDomains'
 
 export type IoDatabaseCommandEnvelope = {} & {
     correlationId: number
-    command: IoDatabaseCommand
-    tableName: IoDataTableName
+    command: CrudlDatabaseCommand
+    tableName: CrudlTableName
 }
   
 export type IoDatabaseResponseEnvelope = {
@@ -17,7 +13,7 @@ export type IoDatabaseResponseEnvelope = {
 } | {
     type: "EVENT"
     correlationId: number
-    event: IoDatabaseEvent
+    event: CrudlDatabaseEvent
 }
   
 export const execOnDatabase = (cmdenv:IoDatabaseCommandEnvelope,callback:(result:IoDatabaseResponseEnvelope)=>void): void  => {
@@ -32,7 +28,7 @@ export const execOnDatabase = (cmdenv:IoDatabaseCommandEnvelope,callback:(result
             })
         }
 
-    const raiseEvent1 = (event:IoDatabaseEvent) => {
+    const raiseEvent1 = (event:CrudlDatabaseEvent) => {
         callback({
         correlationId: cmdenv.correlationId,
         event,
@@ -47,17 +43,17 @@ export const execOnDatabase = (cmdenv:IoDatabaseCommandEnvelope,callback:(result
 
     const databaseName = "IODINE"
     
-    const tableHealthData: IoDataTableName = "CountyHealthData"
-    const tableSocialData: IoDataTableName = "SocialServicesData"
-    const tableCourtData:  IoDataTableName = "CourtData"
-    const tableSubstanceData: IoDataTableName = "SubstanceAbuseData"
-    const tableHealthProvider: IoDataTableName = "HealthCareReport"
-    const tableSubstanceAbuseReport: IoDataTableName = "SubstanceAbuseReport"
-    const tableHonestBroker: IoDataTableName = "HonestBrokerData"
+    const tableHealthData: string = "CountyHealthData"
+    const tableSocialData: string = "SocialServicesData"
+    const tableCourtData:  string = "CourtData"
+    const tableSubstanceData: string = "SubstanceAbuseData"
+    const tableHealthProvider: string = "HealthCareReport"
+    const tableSubstanceAbuseReport: string = "SubstanceAbuseReport"
+    const tableHonestBroker: string = "HonestBrokerData"
 
     const handleDatabaseCommand = (
-        command:IoDatabaseCommand, 
-        raiseEvent:((event:IoDatabaseEvent)=>void),
+        command:CrudlDatabaseCommand, 
+        raiseEvent:((event:CrudlDatabaseEvent)=>void),
         handleException:( (msg:string) =>((error:any)=>void) ) 
         ) => {
         const DBOpenRequest = indexedDB.open(databaseName, 1)
@@ -108,7 +104,7 @@ export const execOnDatabase = (cmdenv:IoDatabaseCommandEnvelope,callback:(result
         objectStore = transaction.objectStore(datasourceTableName);
 
         switch(command.type){
-            case "IO_LOAD_BATCH": 
+            case "CRUDL_LOAD_BATCH": 
                 const items = command.items
 
                 items.forEach(i => {
@@ -118,18 +114,18 @@ export const execOnDatabase = (cmdenv:IoDatabaseCommandEnvelope,callback:(result
                     const objectStorePutRequest1: IDBRequest = objectStore.put(i)
                     objectStorePutRequest1.onerror = handleException("objectStoreRequest.onerror")
                     objectStorePutRequest1.onsuccess = (event:any) => {
-                        // raiseEvent({type: "IO_PATIENT_INSERTED", item: i })
+                        // raiseEvent({type: "CRUDL_ITEM_INSERTED", item: i })
                     }
                 })
 
                 const allItems1: IDBRequest = db.transaction(datasourceTableName).objectStore(datasourceTableName).getAll()
                 allItems1.onsuccess = (event:any) => {                
-                    raiseEvent({ type: "IO_DATA_LOADED", items:event.target.result })
+                    raiseEvent({ type: "CRUDL_DATA_LOADED", items:event.target.result })
                 }
 
                 break
 
-            case "IO_INSERT_PATIENT":
+            case "CRUDL_INSERT_ITEM":
 
                 if (command.item.id === 0) {
                     command.item.id = Math.ceil(Math.random() * 100000)
@@ -137,27 +133,27 @@ export const execOnDatabase = (cmdenv:IoDatabaseCommandEnvelope,callback:(result
                 const objectStorePutRequest: IDBRequest = objectStore.put(command.item)
                 objectStorePutRequest.onerror = handleException("objectStoreRequest.onerror")
                 objectStorePutRequest.onsuccess = (event:any) => {
-                    raiseEvent({type: "IO_PATIENT_INSERTED", item: command.item })
+                    raiseEvent({type: "CRUDL_ITEM_INSERTED", item: command.item })
                 }
                 
                 break
 
-            case "IO_DELETE_PATIENT":
+            case "CRUDL_DELETE_ITEM":
                 if (command.id === 0) {
                     break
                 }
                 const objectStoreDeleteRequest: IDBRequest = objectStore.delete(command.id)
                 objectStoreDeleteRequest.onerror = handleException("objectStoreRequest.onerror")
                 objectStoreDeleteRequest.onsuccess = (event:any) => {
-                    raiseEvent({type: "IO_PATIENT_DELETED", id: command.id })
+                    raiseEvent({type: "CRUDL_ITEM_DELETED", id: command.id })
                }
 
                     break
 
-              case "IO_LOAD_DATA":
+              case "CRUDL_LOAD_DATA":
                 const allItems: IDBRequest = db.transaction(datasourceTableName).objectStore(datasourceTableName).getAll()
                 allItems.onsuccess = (event:any) => {                
-                    raiseEvent({ type: "IO_DATA_LOADED", items:event.target.result })
+                    raiseEvent({ type: "CRUDL_DATA_LOADED", items:event.target.result })
                 }
 
                 //   const index: IDBIndex = db.transaction(datasourceTableName).objectStore(datasourceTableName).index("titleIdx")

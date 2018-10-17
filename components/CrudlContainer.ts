@@ -1,28 +1,29 @@
 import { connect } from 'react-redux';
 import * as redux from 'redux';
-import { createIoPatientManagementCommands, IoPatientManagementCommand } from 'src/jscommon/actions/IoPatientManagementSaga'
-import { DomainValues, IoEntity } from 'src/jscommon/data/IoDomainCommands'
-import { IoPatientManagementState } from 'src/jscommon/reducers/ioPatientManagementReducers';
+import { CrudlDomainValues } from 'src/data/CrudlDomains'
 import * as state from 'src/reducers/index'
+import { createIoPatientManagementCommands, CrudlSagaCommand } from '../actions/CrudlSaga'
+import { CrudlEntity } from '../data/CrudlDomainCommands'
+import { CrudlState } from '../reducers/CrudlReducers';
 
 export type AttributeProps = {} & {
     name: string
 }
   
-export type StateProps<T extends IoEntity> = {} & {
+export type StateProps<T extends CrudlEntity> = {} & {
     items: T[]
     item: T | void
 }
   
-export type ConnectedDispatch<T extends IoEntity> = {} & {
+export type ConnectedDispatch<T extends CrudlEntity> = {} & {
     selectItem?: (item: T) => void
     addItem?: (item: T) => void
     deleteItem?: (id: number) => void
     loadItems?: () => void
 }
 
-export type SelectSubState = (s:state.All)=>IoPatientManagementState
-export const connectContainer = <T extends IoEntity, U>(domain:DomainValues, component: any, select:SelectSubState) => {
+export type SelectSubState = (s:state.All)=>CrudlState
+export const connectContainer = <T extends CrudlEntity, U>(domain:CrudlDomainValues, component: any, select:SelectSubState) => {
 
     const mapStateToProps = (state1: state.All, ownProps: AttributeProps): StateProps <T> => {
         const ios = select(state1)        
@@ -31,7 +32,7 @@ export const connectContainer = <T extends IoEntity, U>(domain:DomainValues, com
             items: ios.items as T[]
         } }
     
-    const mapDispatchToProps = (dispatch: redux.Dispatch<IoPatientManagementCommand>): ConnectedDispatch<T> => {
+    const mapDispatchToProps = (dispatch: redux.Dispatch<CrudlSagaCommand>): ConnectedDispatch<T> => {
         const commands = createIoPatientManagementCommands(domain)
         return {
             addItem: (item:T) => dispatch(commands.addItem(item)),
@@ -43,7 +44,7 @@ export const connectContainer = <T extends IoEntity, U>(domain:DomainValues, com
 
     return connect<{}, {}, AttributeProps>( 
         (s: state.All,o:AttributeProps) => mapStateToProps(s,o), 
-        (dispatch: redux.Dispatch<IoPatientManagementCommand>) => mapDispatchToProps(dispatch)) 
+        (dispatch: redux.Dispatch<CrudlSagaCommand>) => mapDispatchToProps(dispatch)) 
         (component)
 } 
 

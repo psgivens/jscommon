@@ -1,10 +1,10 @@
 import { Dispatch } from 'redux'
+import { execOnDatabase, IoDatabaseCommandEnvelope, IoDatabaseResponseEnvelope } from 'src/data/CrudlDataContext'
+import { CrudlDatabaseCommand, CrudlDatabaseEvent, CrudlTableName } from 'src/data/CrudlDomains'
 import { createWorker, ITypedWorker } from 'typed-web-workers'
-import { execOnDatabase, IoDatabaseCommandEnvelope, IoDatabaseResponseEnvelope } from '../data/IoDataContext'
-import { IoDatabaseCommand, IoDatabaseEvent, IoDataTableName } from '../data/IoDomainCommands'
 
 type PromiseBack = {} & {
-  resolve: (event:IoDatabaseEvent) => void
+  resolve: (event:CrudlDatabaseEvent) => void
   reject: (error:any) => void
 }
 const promiseBacks: { [index:number]: PromiseBack } = {}
@@ -20,10 +20,10 @@ export class IoDatabaseWorker {
       execOnDatabase, this.execOnUI)    
   }
 
-  public post (tableName: IoDataTableName, command:IoDatabaseCommand): Promise<IoDatabaseEvent> {
+  public post (tableName: CrudlTableName, command:CrudlDatabaseCommand): Promise<CrudlDatabaseEvent> {
     const correlationId = Math.floor(Math.random() * 1000000000000000)
     const cmdenv:IoDatabaseCommandEnvelope = { command, correlationId, tableName }
-    const promise = new Promise<IoDatabaseEvent>((resolve,reject) => {
+    const promise = new Promise<CrudlDatabaseEvent>((resolve,reject) => {
       promiseBacks[cmdenv.correlationId] = { reject, resolve }
       this.databaseWorker.postMessage(cmdenv)
     })
