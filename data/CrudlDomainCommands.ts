@@ -1,4 +1,4 @@
-import { CrudlDomainValues } from 'src/data/CrudlDomains'
+import { CrudlDomainValues } from 'src/core/data/CrudlDomains'
 
 export type CrudlEntity = {} & {
     id: number

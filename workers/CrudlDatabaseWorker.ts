@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux'
-import { execOnDatabase, IoDatabaseCommandEnvelope, IoDatabaseResponseEnvelope } from 'src/data/CrudlDataContext'
-import { CrudlDatabaseCommand, CrudlDatabaseEvent, CrudlTableName } from 'src/data/CrudlDomains'
+import { execOnDatabase, IoDatabaseCommandEnvelope, IoDatabaseResponseEnvelope } from 'src/core/data/CrudlDataContext'
+import { CrudlDatabaseCommand, CrudlDatabaseEvent, CrudlTableName } from 'src/core/data/CrudlDomains'
 import { createWorker, ITypedWorker } from 'typed-web-workers'
 
 type PromiseBack = {} & {

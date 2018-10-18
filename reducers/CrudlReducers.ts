@@ -1,4 +1,4 @@
-import { CrudlDomainValues } from 'src/data/CrudlDomains'
+import { CrudlDomainValues } from 'src/core/data/CrudlDomains'
 import { CrudlSagaDomainEvent } from 'src/jscommon/actions/CrudlSaga'
 import { CrudlEntity } from 'src/jscommon/data/CrudlDomainCommands'
 

@@ -1,5 +1,5 @@
 import { call, put, takeEvery } from 'redux-saga/effects'
-import { CrudlDatabaseCommand, CrudlDatabaseEvent, CrudlDomainValues, CrudlTableName } from 'src/data/CrudlDomains'
+import { CrudlDatabaseCommand, CrudlDatabaseEvent, CrudlDomainValues, CrudlTableName } from 'src/core/data/CrudlDomains'
 import { CrudlEntity, DomainTypes} from '../data/CrudlDomainCommands'
 import { CrudlDatabaseWorker } from '../workers/CrudlDatabaseWorker'
 import { FetchExampleCommands, FetchExampleSaga } from './FetchExampleSaga'

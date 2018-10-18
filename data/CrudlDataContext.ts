@@ -1,4 +1,4 @@
-import { CrudlDatabaseCommand, CrudlDatabaseEvent, CrudlTableName } from 'src/data/CrudlDomains'
+import { CrudlDatabaseCommand, CrudlDatabaseEvent, CrudlTableName } from 'src/core/data/CrudlDomains'
 
 export type IoDatabaseCommandEnvelope = {} & {
     correlationId: number

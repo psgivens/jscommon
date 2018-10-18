@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import * as redux from 'redux';
-import { CrudlDomainValues } from 'src/data/CrudlDomains'
-import * as state from 'src/reducers/index'
+import { CrudlDomainValues } from 'src/core/data/CrudlDomains'
+import * as state from 'src/core/reducers/index'
 import { createIoPatientManagementCommands, CrudlSagaCommand } from '../actions/CrudlSaga'
 import { CrudlEntity } from '../data/CrudlDomainCommands'
 import { CrudlState } from '../reducers/CrudlReducers';
