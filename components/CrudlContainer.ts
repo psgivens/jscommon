@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import * as redux from 'redux';
 import { CrudlDomainValues } from 'src/core/data/CrudlDomains'
 import * as state from 'src/core/reducers/index'
-import { createIoPatientManagementCommands, CrudlSagaCommand } from '../actions/CrudlSaga'
+import { createCrudlDomainSagaCommands, CrudlSagaCommand } from '../actions/CrudlSaga'
 import { CrudlEntity } from '../data/CrudlDomainCommands'
 import { CrudlState } from '../reducers/CrudlReducers';
 
@@ -33,7 +33,7 @@ export const connectContainer = <T extends CrudlEntity, U>(domain:CrudlDomainVal
         } }
     
     const mapDispatchToProps = (dispatch: redux.Dispatch<CrudlSagaCommand>): ConnectedDispatch<T> => {
-        const commands = createIoPatientManagementCommands(domain)
+        const commands = createCrudlDomainSagaCommands(domain)
         return {
             addItem: (item:T) => dispatch(commands.addItem(item)),
             deleteItem: (id: number) => dispatch(commands.deleteItem(id)),

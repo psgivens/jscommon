@@ -39,7 +39,7 @@ export type CrudlSagaDomainEvent =
 export type CrudlSagaDomainCommand =
     CrudlSagaCommand & DomainTypes
 
-export function createIoPatientManagementCommands (domain:CrudlDomainValues) {
+export function createCrudlDomainSagaCommands (domain:CrudlDomainValues) {
     return {
     addItem: (item: CrudlEntity): CrudlSagaDomainCommand => ({ domain, type: "IO_PATIENT_ADDITEM", item }),
     deleteItem: (id: number): CrudlSagaDomainCommand => ({ domain, type: "IO_PATIENT_DELETEITEM", id }),
