@@ -50,13 +50,18 @@ export function createIoPatientManagementCommands (domain:CrudlDomainValues) {
 
 /************************ SAGA *********************/
 
+export type CrudlCallbacks = {} & {
+    onPutItemAdded: ((event: CrudlSagaDomainEvent) => IterableIterator<any>) | void
+    onPutItemDeleted: ((event: CrudlSagaDomainEvent) => IterableIterator<any>) | void
+}
 
 export class CrudlSaga {
-    private databaseWorker:CrudlDatabaseWorker
-    private tableName: CrudlTableName
-    private domain: CrudlDomainValues
-    constructor (databaseWorker:CrudlDatabaseWorker, domain:CrudlDomainValues, tableName: CrudlTableName) {
-        this.databaseWorker = databaseWorker
+    private callbacks: CrudlCallbacks
+    constructor (
+            private databaseWorker:CrudlDatabaseWorker, 
+            private domain: CrudlDomainValues, 
+            private tableName: CrudlTableName) {
+
         this.saga = this.saga.bind(this)
         this.addItem = this.addItem.bind(this)
         this.loadItems = this.loadItems.bind(this)
@@ -65,11 +70,8 @@ export class CrudlSaga {
         
         this.putItemAdded = this.putItemAdded.bind(this)
         this.putItemDeleted = this.putItemDeleted.bind(this)
-        
-        this.tableName = tableName
-        this.domain = domain
     }
-
+    
     /*************** Register listeners ********************/
     public *saga(): Iterator<any> {
         yield takeEvery('IO_PATIENT_SELECTITEM', this.selectItem)
@@ -78,12 +80,22 @@ export class CrudlSaga {
         yield takeEvery('IO_PATIENT_LOADITEMS', this.loadItems)
     }
 
-    protected *putItemAdded(event: CrudlSagaDomainEvent){
+    protected init(callbacks: CrudlCallbacks){
+        this.callbacks = callbacks
+    }
+    
+    private *putItemAdded(event: CrudlSagaDomainEvent){
         yield put(event)
+        if (this.callbacks && this.callbacks.onPutItemAdded) { 
+            yield this.callbacks.onPutItemAdded(event)
+        }
     }
 
-    protected *putItemDeleted(event: CrudlSagaDomainEvent){
+    private *putItemDeleted(event: CrudlSagaDomainEvent){
         yield put(event)
+        if (this.callbacks && this.callbacks.onPutItemDeleted) { 
+            yield this.callbacks.onPutItemDeleted(event)
+        }
     }
 
     private *selectItem(action: CrudlSagaDomainCommand){
