@@ -7,7 +7,7 @@ Run the followign command from the root of your webapp.
 
     git submodule add 'https://github.com/psgivens/jscommon' src/jscommon
 
-This submodule expects domain information to be profided in a file at `src/data/CrudlDomains.ts`. Define `CrudlTablename` to represent the tables you would like to create in the database. Define `CrudlDomainValues` as the values you would like those domains to be represented throughout your code. Define `CrudlDatabaseCommand` as equivalent to `CrudlDatabaseCommandBase` and `CrudlDatabaseEvent` as equivalent to `CrudlDatabaseEventBase`. An example from the opioid project is this:
+This submodule expects domain information to be profided in a file at `src/core/data/CrudlDomains.ts`. Define `CrudlTablename` to represent the tables you would like to create in the database. Define `CrudlDomainValues` as the values you would like those domains to be represented throughout your code. Define `CrudlDatabaseCommand` as equivalent to `CrudlDatabaseCommandBase` and `CrudlDatabaseEvent` as equivalent to `CrudlDatabaseEventBase`. An example from the opioid project is this:
 
     import { CrudlDatabaseCommandBase, CrudlDatabaseEventBase } from 'src/jscommon/data/CrudlDomainCommands'
     export type CrudlTableName = 
@@ -39,7 +39,7 @@ This submodule expects domain information to be profided in a file at `src/data/
     }
 
 This module also expects the reducers & state to be defined in 
-`src/reducers/index.ts`. The defaut container `CrudlContainer.ts` expects a 
+`src/core/reducers/index.ts`. The defaut container `CrudlContainer.ts` expects a 
 state object called `All`.  
 
     import { combineReducers } from 'redux'
@@ -67,7 +67,7 @@ state object called `All`.
 
 
 
-The final step is to define how your database will interact with the database. Copy `src/jscommon/data/CrudlDataContext.ts` to `src/data/CrudlDataContext.ts` and start modifying.         
+The final step is to define how your database will interact with the database. Copy `src/jscommon/data/CrudlDataContext.ts` to `src/core/data/CrudlDataContext.ts` and start modifying.         
 1. Set the `databaseName` to the desired name name of your indexeddb.
 2. Create const variables corresponding to each of your `CrudlTableNames`
 3. Modify `DBOpenRequest.onupgradeneeded` to create the tables to your specifications. 
