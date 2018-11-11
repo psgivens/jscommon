@@ -2,7 +2,6 @@ import { call, put, takeEvery } from 'redux-saga/effects'
 import { CrudlDatabaseCommand, CrudlDatabaseEvent, CrudlDomainValues, CrudlTableName } from 'src/core/data/CrudlDomains'
 import { CrudlEntity, DomainTypes} from '../data/CrudlDomainCommands'
 import { CrudlDatabaseWorker } from '../workers/CrudlDatabaseWorker'
-import { FetchExampleCommands, FetchExampleSaga } from './FetchExampleSaga'
 
 export type CrudlSagaCommand = {
     type: "IO_PATIENT_LOADITEMS"
@@ -137,9 +136,6 @@ export class CrudlSaga {
 
         // an 'if' block casts the action. 
         if (action.type === "IO_PATIENT_DELETEITEM") {
-
-            const fetchSaga = new FetchExampleSaga()
-            yield fetchSaga.testIp(FetchExampleCommands.fetchIp())
 
             const event: CrudlDatabaseEvent = yield call((command: CrudlDatabaseCommand) => this.databaseWorker.post(this.tableName, command), { 
                 id: action.id,
