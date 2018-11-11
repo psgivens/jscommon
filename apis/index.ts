@@ -1,5 +1,6 @@
 
 export type PingApi = {} & {
+    getConnectToken: () => Promise<void | Response>
     testIp: () => Promise<Response>
     pingGetDto: () => Promise<void | Response>
     pingGetStrings: () => Promise<void | Response>
@@ -155,11 +156,97 @@ const querySocrata = (url:string, soql:string): Promise<void | Response> => {
   });
 };
 
+const data =
+{
+  "client_id": "client",
+  "client_secret": "secret",
+  "grant_type": "client_credentials",
+  "scopes": "api1"
+}
+
+const jsonToQueryString = (json:any):string => 
+  Object.keys(json)
+        .map((key:string):string => 
+            encodeURIComponent(key) + '=' + encodeURIComponent(json[key]))
+        .join('&');
+
+const getConnectToken = (): Promise<void | Response> => {
+  const url = "http://localhost/connect/token"
+  return fetch(url, {        
+      body: jsonToQueryString(data), // body data type must match "Content-Type" header
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+      },
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+  })
+  .then(response => {
+    // tslint:disable-next-line:no-console
+    console.log("Status: " + response.type)
+   return response ? response.json() : "no response"
+  }) // parses response to JSON
+  .catch(error => {
+    // tslint:disable-next-line:no-console
+    console.error("Error fetching " + url)
+    // tslint:disable-next-line:no-console
+    console.error(`Fetch Error =\n`, error)      
+  });
+};
+
 
 export const pingApi: PingApi = {
+  getConnectToken,
   pingGetDto,
   pingGetStrings,
   querySocrata,
   testConnection,
   testIp  
 }
+
+
+
+// function GetToken() {
+//   $.ajax({
+//       type: 'POST',
+//       url: '/connect/token',
+//       crossDomain: true,
+//       timeout: 2000,
+//       data: {
+//           "client_id": "client",
+//           "grant_type": "client_credentials",
+//           "client_secret": "secret",
+//           "scopes": "api1"
+//       }
+//   })
+//   .done(function (data) {
+//       console.log("Got token: " + data.access_token);
+
+//       const tokenDiv = document.createElement("div")
+//       $(tokenDiv).html("Got token: " + data.access_token)
+//       $("#messages").append(tokenDiv)
+
+//       CallService(data.access_token);
+//   });
+// }
+
+
+
+
+
+
+
+// function CallService(token) {
+//   $.ajax({
+//       type: 'GET',
+//       url: '/api/values',
+//       crossDomain: true,
+//       timeout: 2000,
+//       beforeSend: function (xhr) { xhr.setRequestHeader('Authorization', 'Bearer ' + token) }
+//   })
+//   .done(function (data) {
+//       console.log(data);
+
+//       const valuesDiv = document.createElement("div")
+//       $(valuesDiv).html(data)
+//       $("#messages").append(valuesDiv)
+//   });
+// }
