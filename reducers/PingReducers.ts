@@ -23,7 +23,7 @@ export const pingReducer = (state:PingState = initialState, action: PingEvent): 
             case "PING_SUCCESS_DTO":
                 return {...(createInitialState()), dto:action.dto}
             case "PING_SUCCESS_STRINGS":
-                return {...(createInitialState()), dto:action.values}
+                return {...(createInitialState()), values:action.values}
         }
         return state
     }

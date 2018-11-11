@@ -16,6 +16,8 @@ export type StateProps = {} & {
   
 export type ConnectedDispatch = {} & {
     getIp?:() => void
+    pingGetDto?: () => void
+    pingGetStrings?: () => void
 }
 
 
@@ -26,7 +28,9 @@ const mapStateToProps = (state1: state.All, ownProps: AttributeProps): StateProp
 
 const mapDispatchToProps = (dispatch: redux.Dispatch<PingCommand>): ConnectedDispatch => {
     return {
-        getIp: () => dispatch(PingCommands.pingForIp())
+        getIp: () => dispatch(PingCommands.pingForIp()),
+        pingGetDto: () => dispatch(PingCommands.pingGetDto()),
+        pingGetStrings: () => dispatch(PingCommands.pingGetStrings())
     }
 }    
 

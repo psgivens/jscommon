@@ -29,6 +29,8 @@ constructor (props:ThisProps) {
   super (props)
   this.state = { }
   this.onGetIPPressed = this.onGetIPPressed.bind(this)
+  this.onPingGetStringsPressed = this.onPingGetStringsPressed.bind(this)
+  this.onPingGetDtoPressed = this.onPingGetDtoPressed.bind(this)
 }
 
   public render () {
@@ -71,6 +73,8 @@ constructor (props:ThisProps) {
     <section className="section" >
       <div className="Data-entry" >
         <Button onClick={this.onGetIPPressed} text="Get IP" />
+        <Button onClick={this.onPingGetStringsPressed} text="GET ping" />
+        <Button onClick={this.onPingGetDtoPressed} text="GET ping DTO" />
       </div>
     </section>
   </div>)
@@ -79,6 +83,15 @@ constructor (props:ThisProps) {
     event.preventDefault()
     this.props.getIp!()
   }
+  private onPingGetStringsPressed (event: React.SyntheticEvent<HTMLButtonElement>) {
+    event.preventDefault()
+    this.props.pingGetStrings!()
+  }
+  private onPingGetDtoPressed (event: React.SyntheticEvent<HTMLButtonElement>) {
+    event.preventDefault()
+    this.props.pingGetDto!()
+  }
+
 }
 
 // Export the react component

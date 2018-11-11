@@ -9,17 +9,17 @@ export type PingCommand = {
 } | {
     type: "PING_POST_DTO"
 } | {
-    type: "PING_GET_STRING"
+    type: "PING_GET_STRINGS"
 } | {
-    type: "PING_POST_STRING"
+    type: "PING_POST_STRINGS"
 } 
 
 export const PingCommands = {
     pingForIp: ():PingCommand => ({ type: "PING_NETWORK_FOR_IP" }),
     pingGetDto: ():PingCommand => ({ type: "PING_GET_DTO" }),
-    pingGetString: ():PingCommand => ({ type: "PING_GET_STRING" }),
+    pingGetStrings: ():PingCommand => ({ type: "PING_GET_STRINGS" }),
     pingPostDto: ():PingCommand => ({ type: "PING_POST_DTO" }),    
-    pingPostString: ():PingCommand => ({ type: "PING_POST_STRING" })
+    pingPostString: ():PingCommand => ({ type: "PING_POST_STRINGS" })
 } 
 
 export type PingEvent = {
@@ -29,10 +29,10 @@ export type PingEvent = {
     ip: string
 } | {
     type: "PING_SUCCESS_DTO"
-    dto: { values: string[] }
+    dto: { value: string }
 } | {
     type: "PING_SUCCESS_STRINGS"
-    values: string[] 
+    values: string[]
 }
 
 /************************ SAGA *********************/
@@ -48,9 +48,10 @@ export class PingSaga {
     /*************** Register listeners ********************/
     public *saga(): Iterator<any> {
         yield takeEvery('PING_NETWORK_FOR_IP', (command:PingCommand) => this.testIp(command))        
-        yield takeEvery("PING_GET_DTO"    , (command:PingCommand) => this.pingGetStrings(command))    
+        yield takeEvery("PING_GET_STRINGS" , (command:PingCommand) => this.pingGetStrings(command))       
+        yield takeEvery("PING_GET_DTO"    , (command:PingCommand) => this.pingGetDto(command))    
         // yield takeEvery("PING_POST_DTO"   , (command:PingCommand) => this.ping(command))     
-        // yield takeEvery("PING_GET_STRING" , (command:PingCommand) => this.ping(command))       
+        
         // yield takeEvery("PING_POST_STRING", (command:PingCommand) => this.ping(command))
     }
 
@@ -64,9 +65,8 @@ export class PingSaga {
         yield put( { 
             ip: responseIp.ip,
             type: "PING_NETWORK_FOR_IP_SUCCESS"
-        })
+        } as PingEvent)
     }
-
 
     public *pingGetStrings(action: PingCommand){
 
@@ -76,9 +76,22 @@ export class PingSaga {
         console.log(responses)
 
         yield put( { 
-            type: "PING_SUCCESS",
+            type: "PING_SUCCESS_STRINGS",
             values: responses
-        })
+        } as PingEvent)
+    }
+
+    public *pingGetDto(action: PingCommand){
+
+        const responses: {value:string} = yield call(pingApi.pingGetStrings)
+
+        // tslint:disable-next-line:no-console
+        console.log(responses)
+
+        yield put( { 
+            dto: responses,
+            type: "PING_SUCCESS_DTO",
+        } as PingEvent)
     }
 
 }
