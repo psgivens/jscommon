@@ -23,7 +23,7 @@ export type ConnectedDispatch = {} & {
 
 const mapStateToProps = (state1: state.All, ownProps: AttributeProps): StateProps => {
     return {
-        pingState: state1.ping
+        pingState: state1.ping,
     } }
 
 const mapDispatchToProps = (dispatch: redux.Dispatch<PingCommand>): ConnectedDispatch => {

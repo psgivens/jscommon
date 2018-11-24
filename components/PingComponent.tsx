@@ -91,7 +91,6 @@ constructor (props:ThisProps) {
     event.preventDefault()
     this.props.pingGetDto!()
   }
-
 }
 
 // Export the react component
