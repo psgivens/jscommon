@@ -7,6 +7,7 @@ type AttributeProps = {} & {
     placeholder: string
     inputType: string
     label:string
+    size?:number
 }
 
 const TextInput:React.SFC<AttributeProps> = ({
@@ -15,9 +16,10 @@ const TextInput:React.SFC<AttributeProps> = ({
     name,
     onChange,
     placeholder,
-    value
+    value,
+    size
 }:AttributeProps) => {
-
+    size = size ? size! : 60
     const onChanged = (event: React.SyntheticEvent<HTMLInputElement>):void => {
         event.preventDefault()
         onChange(event)
@@ -30,7 +32,7 @@ const TextInput:React.SFC<AttributeProps> = ({
             value={value}
             onChange={onChanged}
             type={inputType ? inputType : "text"}
-            size={60} /></div>;
+            size={size} /></div>;
     return label 
         ? <div className="form-group">
             <label htmlFor={name}>{label}</label>
