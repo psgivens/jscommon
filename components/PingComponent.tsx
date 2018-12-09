@@ -1,6 +1,5 @@
 
 import * as React from 'react'
-import Authenticated from 'src/app/components/Authenticated';
 import Button from 'src/jscommon/controls/Button'
 import * as container from './pingComponent/pingComponentContainer'
 import { connectContainer } from './pingComponent/pingComponentContainer'
@@ -37,7 +36,6 @@ constructor (props:ThisProps) {
   public render () {
     
   return (
-    <Authenticated>
       <div className="container-fluid" >
         <section className="hero is-primary">
           <div className="hero-body" style={SecondStyle}>
@@ -80,8 +78,7 @@ constructor (props:ThisProps) {
             <Button onClick={this.onPingGetDtoPressed} text="GET ping DTO" />
           </div>
         </section>
-      </div>
-  </Authenticated>)
+      </div>)
   }
   private onGetIPPressed (event: React.SyntheticEvent<HTMLButtonElement>) {
     event.preventDefault()
