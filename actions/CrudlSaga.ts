@@ -1,7 +1,7 @@
 import { call, put, takeEvery } from 'redux-saga/effects'
-import { CrudlDatabaseCommand, CrudlDatabaseEvent, CrudlDomainValues, CrudlTableName } from 'src/core/data/CrudlDomains'
+import { CrudlDatabaseCommand, CrudlDatabaseEvent, CrudlDomainValues } from 'src/core/data/CrudlDomains'
 import { CrudlEntity, DomainTypes} from '../data/CrudlDomainCommands'
-import { CrudlDatabaseWorker } from '../workers/CrudlDatabaseWorker'
+import { CrudlPost } from '../workers/CrudlDatabaseTableWorker';
 
 export type CrudlSagaCommand = {
     type: "IO_PATIENT_LOADITEMS"
@@ -57,9 +57,9 @@ export type CrudlCallbacks = {} & {
 export class CrudlSaga {
     private callbacks: CrudlCallbacks
     constructor (
-            private databaseWorker:CrudlDatabaseWorker, 
-            private domain: CrudlDomainValues, 
-            private tableName: CrudlTableName) {
+            // private databaseWorker:CrudlDatabaseWorker, 
+            private crudlPost: CrudlPost,
+            private domain: CrudlDomainValues) {
 
         this.saga = this.saga.bind(this)
         this.addItem = this.addItem.bind(this)
@@ -116,7 +116,7 @@ export class CrudlSaga {
         // an 'if' block casts the action. 
         if (action.type === "IO_PATIENT_ADDITEM") {
 
-            const event: CrudlDatabaseEvent = yield call((command: CrudlDatabaseCommand) => this.databaseWorker.post(this.tableName, command), { 
+            const event: CrudlDatabaseEvent = yield call((command: CrudlDatabaseCommand) => this.crudlPost(command), { 
                 item:action.item,
                 type: "CRUDL_INSERT_ITEM",
             } as CrudlDatabaseCommand)
@@ -137,7 +137,7 @@ export class CrudlSaga {
         // an 'if' block casts the action. 
         if (action.type === "IO_PATIENT_DELETEITEM") {
 
-            const event: CrudlDatabaseEvent = yield call((command: CrudlDatabaseCommand) => this.databaseWorker.post(this.tableName, command), { 
+            const event: CrudlDatabaseEvent = yield call((command: CrudlDatabaseCommand) => this.crudlPost(command), { 
                 id: action.id,
                 type: "CRUDL_DELETE_ITEM",
             } as CrudlDatabaseCommand)
@@ -154,7 +154,7 @@ export class CrudlSaga {
 
     private *loadItems(action: CrudlSagaDomainCommand){
         if (action.type === "IO_PATIENT_LOADITEMS") {
-            const event: CrudlDatabaseEvent = yield call((command: CrudlDatabaseCommand) => this.databaseWorker.post(this.tableName, command), { 
+            const event: CrudlDatabaseEvent = yield call((command: CrudlDatabaseCommand) => this.crudlPost(command), { 
                 type: "CRUDL_LOAD_DATA",
             } )
 

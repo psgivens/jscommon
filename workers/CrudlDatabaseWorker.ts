@@ -18,6 +18,7 @@ export class CrudlDatabaseWorker {
     this.dispatch = dispatch
     this.databaseWorker = createWorker(
       execOnDatabase, this.execOnUI)    
+    this.post = this.post.bind(this)
   }
 
   public post (tableName: CrudlTableName, command:CrudlDatabaseCommand): Promise<CrudlDatabaseEvent> {
