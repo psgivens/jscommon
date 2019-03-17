@@ -10,7 +10,7 @@ export type AuthenticationState = {} & {
 
 export const createInitialState = (): AuthenticationState => ({ 
     headerClaims: undefined,
-    isAuthenticated: true,
+    isAuthenticated: false,
     payloadClaims: undefined,
     scopes: [],
     token: ""

@@ -160,8 +160,10 @@ const data =
 {
   "client_id": "client",
   "client_secret": "secret",
-  "grant_type": "client_credentials",
-  "scopes": "api1"
+  "grant_type": "password",
+  "password": "password123",
+  "scopes": "api1",
+  "username": "js@maoe",
 }
 
 const jsonToQueryString = (json:any):string => 
