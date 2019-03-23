@@ -4,15 +4,15 @@ import { CrudlEntity, DomainTypes} from '../data/CrudlDomainCommands'
 import { CrudlPost } from '../workers/CrudlDatabaseTableWorker';
 
 export type CrudlSagaCommand = {
-    type: "IO_PATIENT_LOADITEMS"
+    type: "IO_CRUDLITEM_LOADITEMS"
 } | {
-    type: "IO_PATIENT_ADDITEM"
+    type: "IO_CRUDLITEM_ADDITEM"
     item: CrudlEntity
 } | {
-    type: "IO_PATIENT_DELETEITEM"
+    type: "IO_CRUDLITEM_DELETEITEM"
     id: number
 } | {
-    type: "IO_PATIENT_SELECTITEM"
+    type: "IO_CRUDLITEM_SELECTITEM"
     item: CrudlEntity
 } 
 
@@ -40,10 +40,10 @@ export type CrudlSagaDomainCommand =
 
 export function createCrudlDomainSagaCommands (domain:CrudlDomainValues) {
     return {
-    addItem: (item: CrudlEntity): CrudlSagaDomainCommand => ({ domain, type: "IO_PATIENT_ADDITEM", item }),
-    deleteItem: (id: number): CrudlSagaDomainCommand => ({ domain, type: "IO_PATIENT_DELETEITEM", id }),
-    loadItems: ():CrudlSagaDomainCommand => ({ domain, type: "IO_PATIENT_LOADITEMS" }),
-    selectItem: (item: CrudlEntity):CrudlSagaDomainCommand => ({ domain, type: "IO_PATIENT_SELECTITEM", item })
+    addItem: (item: CrudlEntity): CrudlSagaDomainCommand => ({ domain, type: "IO_CRUDLITEM_ADDITEM", item }),
+    deleteItem: (id: number): CrudlSagaDomainCommand => ({ domain, type: "IO_CRUDLITEM_DELETEITEM", id }),
+    loadItems: ():CrudlSagaDomainCommand => ({ domain, type: "IO_CRUDLITEM_LOADITEMS" }),
+    selectItem: (item: CrudlEntity):CrudlSagaDomainCommand => ({ domain, type: "IO_CRUDLITEM_SELECTITEM", item })
 } }
 
 
@@ -73,10 +73,10 @@ export class CrudlSaga {
     
     /*************** Register listeners ********************/
     public *saga(): Iterator<any> {
-        yield takeEvery('IO_PATIENT_SELECTITEM', this.selectItem)
-        yield takeEvery('IO_PATIENT_ADDITEM', this.addItem)
-        yield takeEvery('IO_PATIENT_DELETEITEM', this.deleteItem)
-        yield takeEvery('IO_PATIENT_LOADITEMS', this.loadItems)
+        yield takeEvery('IO_CRUDLITEM_SELECTITEM', this.selectItem)
+        yield takeEvery('IO_CRUDLITEM_ADDITEM', this.addItem)
+        yield takeEvery('IO_CRUDLITEM_DELETEITEM', this.deleteItem)
+        yield takeEvery('IO_CRUDLITEM_LOADITEMS', this.loadItems)
     }
 
     protected init(callbacks: CrudlCallbacks){
@@ -101,7 +101,7 @@ export class CrudlSaga {
         if (action.domain !== this.domain) { return }
 
         // an 'if' block casts the action. 
-        if (action.type === "IO_PATIENT_SELECTITEM") {
+        if (action.type === "IO_CRUDLITEM_SELECTITEM") {
             yield put( {
                 domain: this.domain,
                 item: action.item,
@@ -114,7 +114,7 @@ export class CrudlSaga {
         if (action.domain !== this.domain) { return }
 
         // an 'if' block casts the action. 
-        if (action.type === "IO_PATIENT_ADDITEM") {
+        if (action.type === "IO_CRUDLITEM_ADDITEM") {
 
             const event: CrudlDatabaseEvent = yield call((command: CrudlDatabaseCommand) => this.crudlPost(command), { 
                 item:action.item,
@@ -135,7 +135,7 @@ export class CrudlSaga {
         if (action.domain !== this.domain) { return }
 
         // an 'if' block casts the action. 
-        if (action.type === "IO_PATIENT_DELETEITEM") {
+        if (action.type === "IO_CRUDLITEM_DELETEITEM") {
 
             const event: CrudlDatabaseEvent = yield call((command: CrudlDatabaseCommand) => this.crudlPost(command), { 
                 id: action.id,
@@ -153,7 +153,7 @@ export class CrudlSaga {
     }
 
     private *loadItems(action: CrudlSagaDomainCommand){
-        if (action.type === "IO_PATIENT_LOADITEMS") {
+        if (action.type === "IO_CRUDLITEM_LOADITEMS") {
             const event: CrudlDatabaseEvent = yield call((command: CrudlDatabaseCommand) => this.crudlPost(command), { 
                 type: "CRUDL_LOAD_DATA",
             } )
