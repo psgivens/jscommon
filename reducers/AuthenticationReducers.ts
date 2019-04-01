@@ -8,15 +8,22 @@ export type AuthenticationState = {} & {
     payloadClaims: AuthPayloadClaims | void
 }
 
-export const createInitialState = (): AuthenticationState => ({ 
-    headerClaims: undefined,
-    isAuthenticated: false,
-    payloadClaims: undefined,
-    scopes: [],
-    token: ""
-})
+export const createInitialState = (accessToken:string): AuthenticationState => 
+    accessToken ? { 
+        headerClaims: undefined,
+        isAuthenticated: true,
+        payloadClaims: undefined,
+        scopes: [],
+        token: accessToken
+    } : {
+        headerClaims: undefined,
+        isAuthenticated: false,
+        payloadClaims: undefined,
+        scopes: [],
+        token: ""
+    }
 
-const initialState:AuthenticationState = createInitialState()
+const initialState:AuthenticationState = createInitialState('')
 export const authenticationReducer = (state:AuthenticationState = initialState, action: AuthenticationEvent): AuthenticationState =>   
     {
         switch(action.type) {            
